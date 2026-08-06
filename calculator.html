@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engineering Calculator — Josh Taylor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+  :root{
+    --bg:#F4F6F9; --surface:#FFFFFF; --surface-2:#ECEFF4; --border:#DCE1E9;
+    --text:#14181F; --text-muted:#5C6572; --accent:#3D68C9; --pastel:#8E8AC9;
+    --shadow:0 8px 24px rgba(20,24,31,0.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{ background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; }
+  button,a{ outline:none; font-family:inherit; }
+  button::-moz-focus-inner{ border:0; }
+
+  .layout{ display:flex; min-height:100vh; }
+
+  /* ---- Sidebar ---- */
+  .sidebar{
+    width:300px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto;
+  }
+  .sidebar-head{ padding:22px 20px 16px; border-bottom:1px solid var(--border); }
+  .back-to-site{ display:inline-flex; align-items:center; gap:6px; font-size:.82rem; color:var(--text-muted); margin-bottom:14px; }
+  .back-to-site:hover{ color:var(--accent); }
+  .back-to-site svg{ width:14px; height:14px; }
+  .logo-mark{ width:20px; height:20px; border-radius:5px; background: linear-gradient(135deg, var(--accent), var(--pastel)); flex-shrink:0; }
+  .brand-row{ display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+  .brand-row .name{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.95rem; letter-spacing:-0.01em; }
+  .tool-title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.15rem; }
+  .tool-sub{ color:var(--text-muted); font-size:.78rem; margin-top:4px; }
+
+  .search-wrap{ padding:14px 20px; border-bottom:1px solid var(--border); }
+  .search-wrap input{
+    width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+    padding:9px 12px; font-size:.85rem; color:var(--text);
+  }
+  .search-wrap input:focus{ outline:none; border-color:var(--accent); }
+
+  .tree{ padding:10px 12px; flex-grow:1; }
+  .cat{ margin-bottom:2px; }
+  .cat-btn{
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px;
+    background:none; border:none; text-align:left; padding:10px 10px; border-radius:8px;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:.85rem; color:var(--text); cursor:pointer;
+  }
+  .cat-btn:hover{ background:var(--surface-2); color:var(--accent); }
+  .cat-btn svg{ width:14px; height:14px; color:var(--text-muted); transition: transform .25s ease, color .2s ease; flex-shrink:0; }
+  .cat.open .cat-btn svg{ transform: rotate(90deg); }
+  .cat-btn:hover svg{ color:var(--accent); }
+  .cat-items{ max-height:0; overflow:hidden; transition: max-height .3s ease; padding-left:10px; }
+  .cat.open .cat-items{ max-height:600px; }
+  .eq-link{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    width:100%; background:none; border:none; text-align:left; cursor:pointer;
+    padding:8px 12px; border-radius:8px; font-size:.82rem; color:var(--text-muted);
+    border-left:2px solid transparent;
+  }
+  .eq-link:hover{ background:var(--surface-2); color:var(--accent); }
+  .eq-link.active{ background:var(--surface-2); color:var(--accent); border-left-color:var(--accent); font-weight:600; }
+  .eq-badge{
+    font-family:'IBM Plex Mono',monospace; font-size:.62rem; padding:2px 7px; border-radius:999px;
+    background:var(--surface-2); color:var(--text-muted); white-space:nowrap;
+  }
+  .eq-badge.live{ background:rgba(61,104,201,.12); color:var(--accent); }
+
+  /* ---- Main content ---- */
+  .content{ flex-grow:1; min-width:0; }
+  .content-inner{ max-width:760px; margin:0 auto; padding:56px 40px 100px; }
+
+  .mobile-topbar{ display:none; }
+
+  .welcome{ text-align:center; padding-top:100px; color:var(--text-muted); }
+  .welcome h2{ font-family:'Space Grotesk',sans-serif; color:var(--text); font-size:1.4rem; margin-bottom:10px; }
+
+  .breadcrumb{ font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--pastel); text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px; }
+  .eq-title{ font-family:'Space Grotesk',sans-serif; font-size:1.9rem; font-weight:600; }
+  .eq-desc{ color:var(--text-muted); margin-top:14px; line-height:1.7; max-width:620px; }
+
+  .formula-box{
+    margin-top:32px; background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:36px; display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+  }
+
+  .var-table{ margin-top:32px; width:100%; border-collapse:collapse; }
+  .var-table th{ text-align:left; font-family:'IBM Plex Mono',monospace; font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); padding:8px 12px; border-bottom:1px solid var(--border); }
+  .var-table td{ padding:10px 12px; border-bottom:1px solid var(--border); font-size:.88rem; }
+  .var-table td.sym{ font-family:'IBM Plex Mono',monospace; color:var(--accent); font-weight:600; }
+  .var-table td.unit{ color:var(--text-muted); font-family:'IBM Plex Mono',monospace; font-size:.82rem; }
+
+  .calc-box{
+    margin-top:36px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:32px;
+  }
+  .calc-box h3{ font-family:'Space Grotesk',sans-serif; font-size:1.05rem; margin-bottom:6px; }
+  .calc-sub{ color:var(--text-muted); font-size:.85rem; margin-bottom:22px; }
+  .field-row{ margin-bottom:16px; }
+  .field-row label{ display:block; font-family:'IBM Plex Mono',monospace; font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); margin-bottom:6px; }
+  .field-row .input-unit{ display:flex; align-items:stretch; }
+  .field-row input, .field-row select{
+    width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:8px 0 0 8px;
+    padding:11px 13px; font-size:.92rem; color:var(--text);
+  }
+  .field-row select{ border-radius:8px; }
+  .field-row .input-unit input:focus{ outline:none; border-color:var(--accent); }
+  .unit-tag{
+    background:var(--surface-2); border:1px solid var(--border); border-left:none; border-radius:0 8px 8px 0;
+    display:flex; align-items:center; padding:0 14px; color:var(--text-muted); font-size:.82rem; font-family:'IBM Plex Mono',monospace;
+    white-space:nowrap;
+  }
+  .btn{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:.88rem; border-radius:999px; cursor:pointer;
+    border:none; padding:11px 24px; transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .btn-primary{ background:var(--accent); color:#fff; box-shadow:var(--shadow); }
+  .btn-primary:hover{ transform: translateY(-2px); }
+  .btn:focus-visible{ box-shadow: 0 0 0 3px rgba(61,104,201,.35); }
+
+  .result-box{
+    margin-top:22px; background:rgba(61,104,201,.08); border:1px solid rgba(61,104,201,.25);
+    border-radius:12px; padding:18px 20px; display:none;
+  }
+  .result-box.show{ display:block; }
+  .result-box .label{ font-family:'IBM Plex Mono',monospace; font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--accent); }
+  .result-box .value{ font-family:'Space Grotesk',sans-serif; font-size:1.6rem; font-weight:600; margin-top:6px; }
+
+  .coming-soon{
+    margin-top:32px; border:1px dashed var(--border); border-radius:16px; padding:40px; text-align:center; color:var(--text-muted);
+  }
+
+  @media (max-width:860px){
+    .layout{ flex-direction:column; }
+    .sidebar{
+      position:fixed; top:0; left:0; height:100vh; width:280px; z-index:100;
+      transform: translateX(-100%); transition: transform .3s ease; box-shadow: var(--shadow);
+    }
+    .sidebar.open{ transform: translateX(0); }
+    .mobile-topbar{
+      display:flex; align-items:center; gap:14px; padding:16px 20px; background:var(--surface);
+      border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50;
+    }
+    .menu-btn{ background:var(--surface-2); border:1px solid var(--border); border-radius:8px; width:38px; height:38px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+    .scrim{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:90; }
+    .scrim.show{ display:block; }
+    .content-inner{ padding:36px 22px 80px; }
+    .eq-title{ font-size:1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mobile-topbar">
+  <button class="menu-btn" id="menuBtn" aria-label="Open equation list">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+  <div class="logo-mark"></div>
+  <div class="tool-title" style="font-size:1rem;">Engineering Calculator</div>
+</div>
+<div class="scrim" id="scrim"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="back-to-site" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Portfolio
+      </a>
+      <div class="brand-row"><div class="logo-mark"></div><div class="name">JOSH TAYLOR</div></div>
+      <div class="tool-title">Engineering Calculator</div>
+      <div class="tool-sub">Reference &amp; interactive equations, physics → astrodynamics</div>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Search by name, use-case, or variable...">
+    </div>
+    <div class="tree" id="tree"><!-- populated by JS --></div>
+  </aside>
+
+  <main class="content">
+    <div class="content-inner" id="contentInner">
+      <div class="welcome">
+        <h2>Select an equation to get started</h2>
+        <p>Browse categories on the left, or search for a specific equation.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ---- Equation data ---- */
+const categories = [
+  { name: "Kinematics", items: [
+    { id:"const-accel", name:"Constant Acceleration (Range)", keywords:["projectile range","initial velocity","launch angle","distance traveled","v0","how far does it go"] },
+    { id:"proj-motion", name:"Projectile Motion", keywords:["trajectory","time of flight","max height","thrown object","horizontal vertical","gravity"] },
+    { id:"rel-motion", name:"Relative Motion", keywords:["reference frame","relative velocity","observer","frame of reference"] },
+  ]},
+  { name: "Statics", items: [
+    { id:"particle-equil", name:"Equilibrium of a Particle", keywords:["sum of forces","free body diagram","fbd","tension","static equilibrium","sum fx sum fy"] },
+    { id:"moment-force", name:"Moment of a Force", keywords:["torque","lever arm","moment arm","rotational force","turning effect"] },
+    { id:"truss-joints", name:"Truss Analysis (Method of Joints)", keywords:["truss","joints","tension compression","structural analysis","pin joint"] },
+  ]},
+  { name: "Dynamics", items: [
+    { id:"newton-2nd", name:"Newton's Second Law", keywords:["f=ma","force mass acceleration","sum of forces equals mass times acceleration"] },
+    { id:"work-energy", name:"Work-Energy Theorem", keywords:["kinetic energy","work done","energy theorem","ke","1/2mv^2"] },
+    { id:"impulse-momentum", name:"Impulse-Momentum", keywords:["momentum change","impulse","collision","mv","change in momentum"] },
+  ]},
+  { name: "Thermodynamics", items: [
+    { id:"ideal-gas", name:"Ideal Gas Law", keywords:["pv=nrt","pressure volume temperature","gas constant","moles"] },
+    { id:"first-law", name:"First Law of Thermodynamics", keywords:["internal energy","heat","work","conservation of energy","q and w"] },
+    { id:"carnot", name:"Carnot Efficiency", keywords:["heat engine","carnot cycle","thermal efficiency","max efficiency"] },
+  ]},
+  { name: "Materials & Strength", items: [
+    { id:"hookes-law", name:"Stress-Strain (Hooke's Law)", keywords:["young's modulus","elastic modulus","spring constant","stress strain curve","f=kx"] },
+    { id:"beam-bending", name:"Beam Bending Stress", keywords:["bending stress","moment of inertia","flexure formula","beam deflection","sigma=mc/i"] },
+    { id:"factor-safety", name:"Factor of Safety", keywords:["fos","safety margin","allowable stress","design factor"] },
+  ]},
+  { name: "Fluid Mechanics", items: [
+    { id:"bernoulli", name:"Bernoulli's Equation", keywords:["pressure velocity","fluid flow","conservation of energy fluid","venturi"] },
+    { id:"reynolds", name:"Reynolds Number", keywords:["laminar turbulent","flow regime","re number","pipe flow"] },
+    { id:"continuity", name:"Continuity Equation", keywords:["mass flow rate","conservation of mass","pipe flow","a1v1=a2v2"] },
+  ]},
+  { name: "Orbital Mechanics & Astrodynamics", items: [
+    { id:"vis-viva", name:"Vis-Viva Equation", keywords:["orbital speed","orbital velocity","semi-major axis","mu","gravitational parameter","speed at radius","spacecraft velocity"] },
+    { id:"kepler-3rd", name:"Kepler's Third Law", keywords:["orbital period","semi-major axis","t^2 a^3","period of orbit"] },
+    { id:"hohmann", name:"Hohmann Transfer Δv", keywords:["transfer orbit","delta v","burn","orbit transfer","fuel budget"] },
+    { id:"orbital-period", name:"Orbital Period", keywords:["period","orbit time","revolution time","how long is an orbit"] },
+  ]},
+];
+
+// Only vis-viva is fully implemented for this prototype; everything else is a placeholder.
+const implemented = new Set(["vis-viva"]);
+
+/* ---- Build sidebar tree ---- */
+const treeEl = document.getElementById('tree');
+categories.forEach((cat, ci) => {
+  const catDiv = document.createElement('div');
+  catDiv.className = 'cat' + (ci === categories.length - 1 ? ' open' : '');
+  catDiv.innerHTML = `
+    <button class="cat-btn" data-cat="${ci}">
+      ${cat.name}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <div class="cat-items">
+      ${cat.items.map(it => `
+        <button class="eq-link" data-eq="${it.id}" data-keywords="${(it.keywords || []).join(' | ').replace(/"/g, '&quot;')}">
+          <span>${it.name}</span>
+          <span class="eq-badge ${implemented.has(it.id) ? 'live' : ''}">${implemented.has(it.id) ? 'Live' : 'Soon'}</span>
+        </button>
+      `).join('')}
+    </div>
+  `;
+  treeEl.appendChild(catDiv);
+});
+
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => btn.closest('.cat').classList.toggle('open'));
+});
+
+const contentInner = document.getElementById('contentInner');
+
+document.querySelectorAll('.eq-link').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.eq-link').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadEquation(btn.dataset.eq);
+    closeSidebarMobile();
+  });
+});
+
+/* ---- Search filter ---- */
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.cat').forEach(catDiv => {
+    let anyMatch = false;
+    catDiv.querySelectorAll('.eq-link').forEach(eq => {
+      const nameMatch = eq.querySelector('span').textContent.toLowerCase().includes(q);
+      const keywordMatch = (eq.dataset.keywords || '').toLowerCase().includes(q);
+      const match = nameMatch || keywordMatch;
+      eq.style.display = match ? '' : 'none';
+      if (match) anyMatch = true;
+    });
+    if (q.length > 0) {
+      catDiv.classList.toggle('open', anyMatch);
+      catDiv.style.display = anyMatch ? '' : 'none';
+    } else {
+      catDiv.style.display = '';
+    }
+  });
+});
+
+/* ---- Mobile sidebar toggle ---- */
+const sidebar = document.getElementById('sidebar');
+const scrim = document.getElementById('scrim');
+document.getElementById('menuBtn').addEventListener('click', () => {
+  sidebar.classList.add('open'); scrim.classList.add('show');
+});
+scrim.addEventListener('click', closeSidebarMobile);
+function closeSidebarMobile(){ sidebar.classList.remove('open'); scrim.classList.remove('show'); }
+
+/* ---- Equation content ---- */
+function findEq(id){
+  for (const cat of categories) {
+    const found = cat.items.find(i => i.id === id);
+    if (found) return { ...found, category: cat.name };
+  }
+  return null;
+}
+
+function loadEquation(id){
+  const eq = findEq(id);
+  if (!eq) return;
+
+  if (!implemented.has(id)) {
+    contentInner.innerHTML = `
+      <div class="breadcrumb">${eq.category}</div>
+      <div class="eq-title">${eq.name}</div>
+      <div class="coming-soon">This equation's explanation and calculator are coming soon.</div>
+    `;
+    return;
+  }
+
+  if (id === 'vis-viva') {
+    contentInner.innerHTML = `
+      <div class="breadcrumb">${eq.category}</div>
+      <div class="eq-title">Vis-Viva Equation</div>
+      <p class="eq-desc">Relates the orbital speed of a body at any point in its orbit to its current distance from the central body and the orbit's semi-major axis. Useful anytime you need the instantaneous speed somewhere along an elliptical, circular, parabolic, or hyperbolic orbit — for example, checking a spacecraft's velocity at perigee vs. apogee, or sizing a transfer burn.</p>
+      <div class="formula-box" id="formulaBox"></div>
+      <table class="var-table">
+        <tr><th>Symbol</th><th>Meaning</th><th>Unit</th></tr>
+        <tr><td class="sym">v</td><td>Orbital speed at distance r</td><td class="unit">km/s</td></tr>
+        <tr><td class="sym">μ</td><td>Standard gravitational parameter of central body</td><td class="unit">km³/s²</td></tr>
+        <tr><td class="sym">r</td><td>Current distance from central body's center</td><td class="unit">km</td></tr>
+        <tr><td class="sym">a</td><td>Semi-major axis of the orbit</td><td class="unit">km</td></tr>
+      </table>
+
+      <div class="calc-box">
+        <h3>Calculate</h3>
+        <p class="calc-sub">Pick which variable you want to solve for — the other fields become your knowns.</p>
+        <div class="field-row">
+          <label>Solve for</label>
+          <select id="vv-solvefor">
+            <option value="v">v — orbital speed</option>
+            <option value="r">r — current distance</option>
+            <option value="a">a — semi-major axis</option>
+          </select>
+        </div>
+        <div class="field-row" id="vv-row-mu">
+          <label>μ — gravitational parameter</label>
+          <div class="input-unit">
+            <input type="number" id="vv-mu" value="398600">
+            <span class="unit-tag">km³/s²</span>
+          </div>
+        </div>
+        <div class="field-row" id="vv-row-v">
+          <label>v — orbital speed</label>
+          <div class="input-unit">
+            <input type="number" id="vv-v" placeholder="e.g. 7.67">
+            <span class="unit-tag">km/s</span>
+          </div>
+        </div>
+        <div class="field-row" id="vv-row-r">
+          <label>r — current distance from center</label>
+          <div class="input-unit">
+            <input type="number" id="vv-r" placeholder="e.g. 6778">
+            <span class="unit-tag">km</span>
+          </div>
+        </div>
+        <div class="field-row" id="vv-row-a">
+          <label>a — semi-major axis</label>
+          <div class="input-unit">
+            <input type="number" id="vv-a" placeholder="e.g. 6778">
+            <span class="unit-tag">km</span>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="vv-calc">Calculate</button>
+        <div class="result-box" id="vv-result">
+          <div class="label" id="vv-result-label">Result</div>
+          <div class="value" id="vv-value">—</div>
+        </div>
+      </div>
+    `;
+    katex.render("v = \\sqrt{\\mu \\left(\\frac{2}{r} - \\frac{1}{a}\\right)}", document.getElementById('formulaBox'));
+
+    const solveForSelect = document.getElementById('vv-solvefor');
+    const rows = { v: document.getElementById('vv-row-v'), r: document.getElementById('vv-row-r'), a: document.getElementById('vv-row-a') };
+    const units = { v: 'km/s', r: 'km', a: 'km' };
+    const labels = { v: 'v — orbital speed', r: 'r — current distance', a: 'a — semi-major axis' };
+
+    function updateRows(){
+      const target = solveForSelect.value;
+      Object.keys(rows).forEach(key => {
+        rows[key].style.display = (key === target) ? 'none' : '';
+      });
+      document.getElementById('vv-result-label').textContent = labels[target].split(' — ')[0] + ' (' + labels[target].split(' — ')[1] + ')';
+    }
+    solveForSelect.addEventListener('change', updateRows);
+    updateRows();
+
+    document.getElementById('vv-calc').addEventListener('click', () => {
+      const target = solveForSelect.value;
+      const mu = parseFloat(document.getElementById('vv-mu').value);
+      const resultBox = document.getElementById('vv-result');
+      const valueEl = document.getElementById('vv-value');
+
+      if (isNaN(mu) || mu <= 0) {
+        valueEl.textContent = "Enter a valid μ";
+        resultBox.classList.add('show');
+        return;
+      }
+
+      if (target === 'v') {
+        const r = parseFloat(document.getElementById('vv-r').value);
+        const a = parseFloat(document.getElementById('vv-a').value);
+        if (isNaN(r) || isNaN(a) || r <= 0) { valueEl.textContent = "Enter valid r and a"; resultBox.classList.add('show'); return; }
+        const inside = mu * (2/r - 1/a);
+        valueEl.textContent = inside < 0 ? "No real solution for these inputs" : Math.sqrt(inside).toFixed(4) + " " + units.v;
+      } else if (target === 'r') {
+        const v = parseFloat(document.getElementById('vv-v').value);
+        const a = parseFloat(document.getElementById('vv-a').value);
+        if (isNaN(v) || isNaN(a)) { valueEl.textContent = "Enter valid v and a"; resultBox.classList.add('show'); return; }
+        const denom = (v*v)/mu + 1/a;
+        valueEl.textContent = denom <= 0 ? "No real solution for these inputs" : (2/denom).toFixed(4) + " " + units.r;
+      } else if (target === 'a') {
+        const v = parseFloat(document.getElementById('vv-v').value);
+        const r = parseFloat(document.getElementById('vv-r').value);
+        if (isNaN(v) || isNaN(r) || r <= 0) { valueEl.textContent = "Enter valid v and r"; resultBox.classList.add('show'); return; }
+        const denom = 2/r - (v*v)/mu;
+        valueEl.textContent = denom === 0 ? "No real solution for these inputs" : (1/denom).toFixed(4) + " " + units.a;
+      }
+      resultBox.classList.add('show');
+    });
+  }
+}
+</script>
+</body>
+</html>

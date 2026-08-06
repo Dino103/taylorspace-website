@@ -1,23 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TaylorSpace</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 60px auto;
-      padding: 0 20px;
-      color: #333;
-    }
-    h1 { color: #1a1a2e; }
-    a { color: #4a90d9; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Josh Taylor — Portfolio Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>TaylorSpace</h1>
-  <p>Welcome. This site is home to the Taylor family server and projects.</p>
+
+<header>
+  <nav>
+    <div class="nav-left">
+      <div class="logo"><div class="logo-mark"></div>JOSH TAYLOR</div>
+      <div class="navlinks" id="navlinks">
+        <div class="nav-indicator" id="navIndicator"></div>
+        <button data-tab="home" class="active">Home</button>
+        <button data-tab="projects">Projects</button>
+        <button data-tab="experience">Experience</button>
+        <button data-tab="tools">Tools</button>
+        <button data-tab="prints">3D Prints</button>
+      </div>
+    </div>
+    <div class="nav-right">
+      <a class="btn btn-ghost" href="Resume_-_Josh_Taylor.pdf" target="_blank" title="Opens in a new tab — nothing downloads automatically">Résumé</a>
+      <button class="btn btn-primary" data-tab="contact">Contact Me</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="panel active" id="panel-home">
+    <div class="hero">
+      <div class="hero-photo">Profile photo placeholder<br>(square crop, ~800×840px)</div>
+      <div>
+        <div class="eyebrow">Mechanical &amp; Aerospace Engineer</div>
+        <h1>Building deployable hardware for <span>small satellites</span> — and everything else I can get my hands on.</h1>
+        <p class="lede">MS Aerospace Engineering candidate at Utah State University, working on hinge and hold-down release mechanisms for CubeSat deployables. Also the maker behind JHT3D.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" data-tab="projects">View Projects</button>
+          <button class="btn btn-ghost" data-tab="prints">See 3D Prints</button>
+        </div>
+        <div class="social-row">
+          <a class="btn btn-social" href="#">LinkedIn</a>
+          <a class="btn btn-social" href="#">Printables</a>
+          <a class="btn btn-social" href="#">Email</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="overview-strip">
+      <h2>What this site is</h2>
+      <p>Placeholder overview paragraph — a short summary of your background, what you're currently working on, and what visitors will find across Projects and 3D Prints. We'll write the real version once the layout is locked in.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-projects">
+    <div class="section-head"><h2>Projects</h2></div>
+    <p class="section-sub">Flight hardware, papers, and personal builds. Placeholder cards — real content comes next round.</p>
+    <div class="grid">
+      <div class="card">
+        <div class="tag">CubeSat · Flight Hardware</div>
+        <h3>Hinge &amp; HDRM Assembly</h3>
+        <p>SmallSat 2026 finalist paper — deployable probe mechanism for small satellites.</p>
+        <button class="btn btn-ghost btn-sm" data-detail="hdrm">Learn more
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <div class="card">
+        <div class="tag">CubeSat · ISS Deployed</div>
+        <h3>SPORT Mission</h3>
+        <p>2022 — hands-on flight hardware contribution.</p>
+        <button class="btn btn-ghost btn-sm" data-detail="hdrm">Learn more
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <div class="card">
+        <div class="tag">CubeSat · Launched 2025</div>
+        <h3>Ouija</h3>
+        <p>Deployment detection &amp; hardware integration.</p>
+        <button class="btn btn-ghost btn-sm" data-detail="hdrm">Learn more
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <div class="card">
+        <div class="tag">CubeSat · 2026</div>
+        <h3>ITASAT-II</h3>
+        <p>Upcoming mission — placeholder summary.</p>
+        <button class="btn btn-ghost btn-sm" data-detail="hdrm">Learn more
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-experience">
+    <div class="section-head"><h2>Experience</h2></div>
+    <p class="section-sub">Work and volunteer experience. Placeholder entries — real content comes next round.</p>
+
+    <div class="exp-group">
+      <h3>Work Experience</h3>
+      <div class="exp-item">
+        <div class="exp-top">
+          <div>
+            <div class="exp-role">Role Title</div>
+            <div class="exp-org">Organization Name — Location</div>
+          </div>
+          <div class="exp-dates">Month Year – Present</div>
+        </div>
+        <p>Placeholder description of responsibilities and impact in this role.</p>
+      </div>
+      <div class="exp-item">
+        <div class="exp-top">
+          <div>
+            <div class="exp-role">Role Title</div>
+            <div class="exp-org">Organization Name — Location</div>
+          </div>
+          <div class="exp-dates">Month Year – Month Year</div>
+        </div>
+        <p>Placeholder description of responsibilities and impact in this role.</p>
+      </div>
+    </div>
+
+    <div class="exp-group">
+      <h3>Volunteer Experience</h3>
+      <div class="exp-item">
+        <div class="exp-top">
+          <div>
+            <div class="exp-role">Role Title</div>
+            <div class="exp-org">Organization Name — Location</div>
+          </div>
+          <div class="exp-dates">Month Year – Present</div>
+        </div>
+        <p>Placeholder description of responsibilities and impact in this role.</p>
+      </div>
+      <div class="exp-item">
+        <div class="exp-top">
+          <div>
+            <div class="exp-role">Role Title</div>
+            <div class="exp-org">Organization Name — Location</div>
+          </div>
+          <div class="exp-dates">Month Year – Month Year</div>
+        </div>
+        <p>Placeholder description of responsibilities and impact in this role.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-tools">
+    <div class="section-head"><h2>Tools</h2></div>
+    <p class="section-sub">Interactive tools I've built. Each opens as its own standalone app in a new tab.</p>
+    <div class="grid">
+      <div class="card">
+        <div class="tag">Astrodynamics · Interactive</div>
+        <h3>Orbit Plotter</h3>
+        <p>Visualize and plot orbital trajectories. Placeholder description — real summary comes next round.</p>
+        <a class="btn btn-ghost btn-sm" href="#" target="_blank">Open Tool
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+        </a>
+      </div>
+      <div class="card">
+        <div class="tag">Reference · Interactive</div>
+        <h3>Engineering Calculator</h3>
+        <p>Searchable library of physics, engineering, and astrodynamics equations — each with an explanation and a working calculator.</p>
+        <a class="btn btn-ghost btn-sm" href="calculator.html" target="_blank">Open Tool
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-prints">
+    <div class="section-head"><h2>3D Prints</h2></div>
+    <p class="section-sub">Files and builds from JHT3D. Placeholder cards for now.</p>
+    <div class="grid">
+      <div class="card"><div class="tag">JHT3D</div><h3>Print Name</h3><p>Short description of the design and print settings.</p>
+        <button class="btn btn-ghost btn-sm" data-detail="print">Learn more
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <div class="card"><div class="tag">JHT3D</div><h3>Print Name</h3><p>Short description of the design and print settings.</p>
+        <button class="btn btn-ghost btn-sm" data-detail="print">Learn more
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <div class="card"><div class="tag">JHT3D</div><h3>Print Name</h3><p>Short description of the design and print settings.</p>
+        <button class="btn btn-ghost btn-sm" data-detail="print">Learn more
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-contact">
+    <div class="section-head"><h2>Contact</h2></div>
+    <p class="section-sub">Placeholder form — will wire up later.</p>
+    <div class="contact-box">
+      <div class="field"><label>Name</label><input type="text" placeholder="Your name"></div>
+      <div class="field"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+      <div class="field"><label>Message</label><textarea rows="4" placeholder="Say hello"></textarea></div>
+      <button class="btn btn-primary" style="width:100%;">Send Message</button>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-detail-hdrm">
+    <div class="back-link" data-back="projects">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to Projects
+    </div>
+    <div class="detail-wrap">
+      <div class="detail-left">
+        <div class="tag">CubeSat · Flight Hardware · SmallSat 2026 Finalist</div>
+        <h1>Hinge &amp; HDRM Assembly</h1>
+        <p class="lede">Development and testing of a hinge and hold-down release mechanism assembly for small satellite deployable probes. Placeholder case-study copy — real write-up comes once content is finalized.</p>
+        <div class="slideshow" data-slideshow>
+          <div class="slide active">Image 1 placeholder</div>
+          <div class="slide">Image 2 placeholder</div>
+          <div class="slide">Image 3 placeholder</div>
+          <button class="slide-arrow prev" data-slide-prev aria-label="Previous image">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="slide-arrow next" data-slide-next aria-label="Next image">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div class="slide-dots"></div>
+        </div>
+      </div>
+      <div class="detail-right">
+        <div>
+          <h3>Overview</h3>
+          <p>Placeholder: the problem this mechanism solves, where it fits in the deployable probe system, and why it matters for the mission.</p>
+        </div>
+        <div>
+          <h3>Approach</h3>
+          <p>Placeholder: design iterations, material choices, testing methodology.</p>
+        </div>
+        <div>
+          <h3>Result</h3>
+          <p>Placeholder: outcomes, test data, lessons learned, current status.</p>
+        </div>
+        <div>
+          <h3>Related</h3>
+          <p>Placeholder: related missions, plus the link below to the full write-up.</p>
+          <a class="btn btn-ghost btn-sm" href="#" target="_blank" style="margin-top:12px;" title="Opens in a new tab — nothing downloads automatically">
+            View Full Paper
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-detail-print">
+    <div class="back-link" data-back="prints">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to 3D Prints
+    </div>
+    <div class="detail-wrap">
+      <div class="detail-left">
+        <div class="tag">JHT3D</div>
+        <h1>Print Name</h1>
+        <p class="lede">Placeholder case-study copy for a 3D print listing — real write-up comes once content is finalized.</p>
+        <div class="slideshow" data-slideshow>
+          <div class="slide active">Image 1 placeholder</div>
+          <div class="slide">Image 2 placeholder</div>
+          <div class="slide">Image 3 placeholder</div>
+          <button class="slide-arrow prev" data-slide-prev aria-label="Previous image">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="slide-arrow next" data-slide-next aria-label="Next image">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div class="slide-dots"></div>
+        </div>
+      </div>
+      <div class="detail-right">
+        <div>
+          <h3>Design Intent</h3>
+          <p>Placeholder: what this design is for, why it was made, and what problem it solves.</p>
+        </div>
+        <div>
+          <h3>Print Settings</h3>
+          <p>Placeholder: material, layer height, infill, supports, and any notable print tuning.</p>
+        </div>
+        <div>
+          <h3>Files</h3>
+          <p>Placeholder: link out to the downloadable STL/3MF files or the Printables listing.</p>
+        </div>
+        <div>
+          <h3>Notes</h3>
+          <p>Placeholder: iteration history, known issues, or tips for anyone printing it themselves.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>© 2026 JOSH TAYLOR — DESIGN PREVIEW, NOT FINAL COPY</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
