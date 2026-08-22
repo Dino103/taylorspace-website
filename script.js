@@ -62,3 +62,20 @@ const panels = document.querySelectorAll('.panel');
     show.querySelector('[data-slide-prev]').addEventListener('click', () => goTo(current - 1));
     show.querySelector('[data-slide-next]').addEventListener('click', () => goTo(current + 1));
   });
+
+// Contact form — builds a pre-filled mailto: link and opens it
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('cf-name').value;
+    const email = document.getElementById('cf-email').value;
+    const message = document.getElementById('cf-message').value;
+
+    const yourEmail = "josh.w.taylor@usu.edu"; // <-- change this to whichever address you want messages sent to
+    const subject = encodeURIComponent(`Portfolio contact from ${name}`);
+    const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+
+    window.location.href = `mailto:${yourEmail}?subject=${subject}&body=${body}`;
+  });
+}
